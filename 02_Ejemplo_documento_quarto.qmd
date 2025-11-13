@@ -1,0 +1,174 @@
+---
+title: "Ajuste de modelos de crecimiento en altura dominante"
+#subtitle: "El caso de los modelos de altura dominante"
+description: "Análisis de mediciones de altura dominante y reporte de parámetros de un ajuste de modelos de crecimiento"
+date: 11/13/2025
+date-format: "dddd D, MMMM YYYY"
+author: 
+  - name: "Abel Joseph Hernández-Martínez"
+    url: https://github.com/JosephForest99
+    affiliation: Estudiante del Posgrado de Ciencias Forestales, Colegio de Postgraduados, Campus Montecillo
+    affiliation-url: https://www.colpos.mx/wb/index.php/campus-montecillo 
+  - name: "Ricardo Martínez-Moshan"
+    affiliation: Estudiante del Posgrado de Ciencias Forestales, Colegio de Postgraduados, Campus Montecillo
+    affiliation-url: https://www.colpos.mx/wb/index.php/campus-montecillo 
+categories: 
+  - modelos
+  - índice de sitio
+  - crecimiento forestal
+
+abstract-title: Resumen
+abstract: El siguiente documento se enfoca en utilizar funciones de paquetes/librerías de `R` en el ajuste de modelos y reporte de resultados.
+keywords: modelos, índice de sitio, crecimiento de árboles
+keyboard: true
+
+format: 
+  html:
+    title-block-banner: true
+    theme: lumen # https://quarto.org/docs/output-formats/html-themes.html
+    toc: true
+    toc-title: Contenido # Para cambiar el nombre del índice
+    toc-depth: 3 # El número de secciones que aparecen en el índice
+    toc-location: left # Ubicación de la tabla de contenido
+    code-fold: true # Activar o desactivar que se muestren los códigos
+    code-tools: true # Opción para caja de opciones para mostrar u ocultar los códigos
+    code-link: true # Opción para mostrar el link del código
+    html-math-method: katex # Para texto matemático
+    number-sections: true # Opción para que aparezca el número de sección
+    number-depth: 3 # El máximo número de sección
+    #self-contained: true # Para crear un doc HTML completamente autónomo (con imágenes, etc.)
+    anchor-sections: true # Para crear vínculos de las secciones
+
+editor: source
+lang: es # Configurar el idioma a español
+link-citation: true
+bibliography: bibliografia.bib
+csl: apa.csl
+fontsize: 11pt
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+```
+
+# Introducción
+
+En el ámbito forestal es común que los profesionales del áreas recaben información para analizar, explorar y reportar algún hecho, fenómeno o evento. Uno de los temas con amplia aplicación en el sector forestal es el tema del **crecimiento** de los árboles o rodales. Con la información que se obtiene de campo se realizan ajuste de **modelos** que ayuden a explicar el comportamiento del crecimiento de las masas forestales. En la literatura existe una diversidad de modelos que se han utilizado en la investigación forestal, principalmente en el tema del crecimiento de altura dominante, pero que se pueden usar en otras variables como:
+
+-   el diámetro,
+-   área basal,
+-   volumen,
+-   biomasa, entre otras.
+
+El objetivo de está documento es simplemente mostrar el uso de algunas funciones para reportar los resultados del ajuste de modelos con diferentes técnicas de regresión. Los reportes se pueden elaborar a través de documentos creados por `RMarkdown`o por su sucesor `Quarto`. Para tener un mayor detalle de su configuración y funcionamiento pueden visitar la página principal de [RMarkdown](https://rmarkdown.rstudio.com/) y [Quarto](https://quarto.org/).
+
+::: callout-note
+Es importante señalar que en este escrito no se pretende explicar la teoría de los modelos de crecimiento y la teoría estadísticas de las técnicas de regresión. Si requiere profundizar la teoría que involucra el crecimiento de las masas forestales, se recomienda realizar una revisión de los libros de @burkhart2012modeling y @vanclay1994modelling. Además, no se consideró la teoría de las técnicas de regresión.
+:::
+
+# Datos de crecimiento
+
+En el ecosistema de `R` se han desarrollado varios paquetes con diversas funciones aplicados en el sector forestal. Estos paquetes proporcionan al usuarios bases de datos que pueden ser utilizadas para practicar el uso de modelos de crecimiento forestal u otros análisis que estén relacionados con la información proporcionada.
+
+En los ejemplos que se presentan aquí, se utilizaron los datos de 107 árboles de *Picea abies* (L.) Kars, los cuales están dentro del paquete `FAwR` y guardados en la función `gutten`.
+
+![Parcela permanente de *Pinus* sp.](figuras/forest_CINSJP3.jpg){#fig-parcela}
+
+Por ejemplo, ver la @fig-parcela
+
+En las siguientes líneas de código se muestra como instalar el paquete, así como su activación dentro del ambiente de `R` para su funcionamiento. También se muestra como se cargan los datos `gutten`. Cabe señalar que el paquete en mención contempla un conjunto de funciones y datos que son utilizados en el libro de @robinson2010forest, el cual también muestra diferentes ejercicios de análisis y modelación aplicado en las ciencias forestales.
+
+```{r datos_gutten}
+# Función para la instalación del paquete FAwR
+#install.packages(FAwR)
+
+# Activar la librería FAwR
+library(FAwR)
+
+# Datos de crecimiento de Picea abies
+data(gutten)
+```
+
+Hasta el momento solo tenemos cargada la base de datos en el ambiente de `R`. Para conocer cual es la información que contiene la base de datos, existen dos funciones que nos permiten obtener la ayuda de las funciones en `R` o en su caso, para conocer la descripción de las variables que conforman las bases de datos. Para ello, en el panel de la consola de `RStudio` se escribe la función `?gutten` o `help(gutten)`. Con las dos funciones anteriores nos dirige a la pestaña de ayuda (`help`) del panel donde se almacenan los archivos, salidas de gráficos, paquetes, `help`, vista, entre otras pestañas.
+
+Uno de los paquetes que ha tenido gran importancia y relevancia en el tema de ciencia de datos, y que también ha sido recomendado su uso para analizar grandes bases de datos es conocido como el `tidyverse`. El mundo de funciones de `tidyverse` está conformado por ocho paquetes que son de gran utilidad para el análisis, exploración, manipulación, transformación, modelación y reporte de datos. Si quiere conocer la variedad de funciones puede visitar la página principal de [tidyverse](https://www.tidyverse.org/packages/). En nuestro ejercicio haremos uso de algunas funciones del paquete de `tidyverse` que se mencionarán en sus respectivos apartados.
+
+Para instalar los ocho paquetes de `tidyverse` use la función en la consola `install.packages("tidyverse")` y posteriormente cargue los paquetes con la función `library(tidyverse)`. La primera función de `tidyverse` que se utilizará en este ejercicio es `glimpse`, la cual nos permite conocer como está estructurada la base de datos, tiene la misma funcionalidad que `str` del paquete base de `R`.
+
+```{r estructura_datos}
+#| comment: " "
+#| collapse: true
+library(tidyverse)
+
+# Función de tidyverse
+glimpse(gutten)
+
+# Función str
+str(gutten)
+```
+
+En la salida anterior nos muestra un reporte del número de columnas y filas que contiene la base de datos `gutten`. Además, nos presenta los tipos de variables de cada una de las columnas: `factor`, `integer` y `numeric`, así como los primeros valores de cada columna. Note que la base de datos contiene nueve variables que corresponden a: sitio (`site`), localización (`location`), árbol (`tree`), edad base (`age.base`), altura (m) (`height`), diámetro normal a la altura de 1.3 sobre el suelo (cm) (`dbh.cm`), volumen (`volume`), edad a la altura del diámetro normal (`age.bh`) y por último un identificador del árbol (`tree.ID`).
+
+# Análisis de datos
+
+```{r}
+library(knitr)
+kable(head(gutten))
+```
+
+## Exploración gráfica
+
+Las variables que se utilizaran en este análisis fueron la altura dominante (`height`) y la edad (`age.bh`), como se muestra en la @fig-crecimiento.
+
+```{r grafica_crecimiento_altura}
+#| label: fig-crecimiento
+#| fig-cap: "Trayectoria del crecimiento de 107 árboles de *Picea abies*"
+
+ggplot(gutten, aes(x = age.bh, y = height, group = tree.ID)) +
+  geom_point() +
+  geom_path() +
+  scale_x_continuous(breaks = seq(from = 0, to = 160, by = 20)) +
+  labs(title = "",
+       y = "Altura (m)",
+       x = "Edad (años)") +
+  theme_classic()
+```
+
+## Modelos de crecimiento base
+
+En este ejercicio se utilizaron dos modelos de crecimiento base ampliamente usados en la literatura. El primero corresponde al modelo de Chapman-Richards:
+
+$$
+h = \beta_0 \times \left( 1-e^{-\beta_1 \times E} \right)^{\beta_{2}}
+$$ {#eq-CR-base}
+
+## Enfoque de diferencia algebraica (ADA)
+
+El modelo anterior se reparametrizó de acuerdo con la metodología de Diferencia Algebraica (ADA, por sus siglas en inglés) propuesta por @10.1093/forestscience/20.2.155. Es importante señalar que después surgió el ADA generalizado propuesto por @10.1093/forestscience/46.1.116. Para el ADA se utilizó el parámetro $\beta_0$, el cual se relaciono con el sitio. Las expresiones de los modelos en su formulación ADA se muestran en la @eq-CR-ADA para el modelo de Chapman-Richards [@pienaar1973chapman].
+
+$$
+h_1 = h_0 \times \left[ \frac{1-exp(-\beta_1 \times E_1)}{1-exp(-\beta_1 \times E_0)} \right]^{\beta_2}
+$$ {#eq-CR-ADA}
+
+## Mínimos cuadrados no lineales
+
+El ajuste de los dos modelos mediante mínimos cuadrados no lineales (MCNL) se realizó por medio de la función `nls` del paquete base `stats` de `R`. Primero se ejemplifica el ajuste del modelo ADA de Chapman-Richards.
+
+```{r fit_richards_nls}
+# install.packages("remotes")
+#install_github("JosephForest99/ForGM")
+library(remotes)
+library(ForGM)
+
+# Ajuste del modelo de Chapman-Richards con parámetro B0
+M1_CR_NLS <- nls(height ~ Richards_B0(B1,B2,h0,50,age.bh),
+                 data = gutten,
+                 start = c(h0 = 25,
+                           B1 = 0.01,
+                           B2 = 1.01))
+
+# Resumen del ajuste del modelo
+summary(M1_CR_NLS)
+```
+
+# Bibliografía
