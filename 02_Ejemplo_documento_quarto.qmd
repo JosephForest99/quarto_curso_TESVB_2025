@@ -38,6 +38,10 @@ format:
     number-depth: 3 # El máximo número de sección
     #self-contained: true # Para crear un doc HTML completamente autónomo (con imágenes, etc.)
     anchor-sections: true # Para crear vínculos de las secciones
+  pdf:
+    toc: true
+    link-citations: true
+    toc-title: Índice
 
 editor: source
 lang: es # Configurar el idioma a español
@@ -72,7 +76,7 @@ En el ecosistema de `R` se han desarrollado varios paquetes con diversas funcion
 
 En los ejemplos que se presentan aquí, se utilizaron los datos de 107 árboles de *Picea abies* (L.) Kars, los cuales están dentro del paquete `FAwR` y guardados en la función `gutten`.
 
-![Parcela permanente de *Pinus* sp.](figuras/forest_CINSJP3.jpg){#fig-parcela}
+![Parcela permanente de *Pinus* sp.](figuras/forest_CINSJP3.jpg){#fig-parcela height="350"}
 
 Por ejemplo, ver la @fig-parcela
 
@@ -120,7 +124,7 @@ kable(head(gutten))
 
 Las variables que se utilizaran en este análisis fueron la altura dominante (`height`) y la edad (`age.bh`), como se muestra en la @fig-crecimiento.
 
-```{r grafica_crecimiento_altura}
+```{r}
 #| label: fig-crecimiento
 #| fig-cap: "Trayectoria del crecimiento de 107 árboles de *Picea abies*"
 
@@ -155,10 +159,11 @@ $$ {#eq-CR-ADA}
 El ajuste de los dos modelos mediante mínimos cuadrados no lineales (MCNL) se realizó por medio de la función `nls` del paquete base `stats` de `R`. Primero se ejemplifica el ajuste del modelo ADA de Chapman-Richards.
 
 ```{r fit_richards_nls}
-# install.packages("remotes")
-#install_github("JosephForest99/ForGM")
-library(remotes)
-library(ForGM)
+# Función de Richards
+Richards_B0 <- function (B1, B2, Y0, E0, E1) 
+{
+    Y0 * ((1 - exp(-B1 * E1))/(1 - exp(-B1 * E0)))^B2
+}
 
 # Ajuste del modelo de Chapman-Richards con parámetro B0
 M1_CR_NLS <- nls(height ~ Richards_B0(B1,B2,h0,50,age.bh),
