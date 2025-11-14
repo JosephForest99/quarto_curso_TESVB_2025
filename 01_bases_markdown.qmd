@@ -40,7 +40,7 @@ csl: apa.csl
 
 Se escribe en formato [YAML]{style="color:red;"} y en él especifican las propiedades del documento, como el título, el autor, la fecha, el formato de salida, el motor de renderizado, los márgenes, la justificación del texto, disposición por defecto de figuras y tablas, el formato de la bibliografía, etc.
 
-``` bash
+``` markdown
 ---
 title: "Iniciando con Quarto"
 author: "Ricardo M"
@@ -56,7 +56,7 @@ lang: es
 
 Se escribe en formato [Markdown]{style="color:red;"} y en él se incluye el texto del documento, que puede incluir elementos como listas, tablas, figuras, referencias cruzadas, referencias bibliográficas, etc.
 
-``` bash
+``` markdown
 La sintaxis básica de Markdown permite crear documentos legibles en texto plano que se
 pueden convertir fácilmente en HTML u otros formatos, utilizando elementos como
 encabezados, listas, tablas y enlaces, mediante caracteres sencillos como `#`, `-`,
@@ -68,7 +68,7 @@ clara de contenido estructurado.
 ::: panel-tabset
 ### Encabezados
 
-``` bash
+``` markdown
 # Título nivel 1
 
 ## Subtítulo nivel 2
@@ -82,7 +82,7 @@ clara de contenido estructurado.
 
 ### Formato de texto
 
-``` bash
+``` markdown
 Para escribir texto en *cursiva* se usa un solo asterisco (*) o guion bajo (_) al
 _inicio y al final del texto_; para poner texto en **negrita**, se utilizan  
 dos asteriscos (**) o dos guiones bajos (__) al __comienzo y cierre del texto__.
@@ -95,7 +95,7 @@ Para escribir texto en *cursiva* se usa un solo asterisco (\*) o guion bajo (\_)
 
 ::::: columns
 ::: {.column width="60%"}
-``` bash
+``` markdown
 * unordered list
   + sub-item 1
   + sub-item 2
@@ -111,7 +111,7 @@ Ejemplo de lista no ordenada:
 :::
 
 ::: {.column width="40%"}
-``` bash
+``` markdown
 Ejemplo de lista ordenada:
 
 1.  Primer item.
@@ -133,7 +133,7 @@ Ejemplo de lista ordenada:
 
 Para crear tablas en Markdown, se usa el carácter `|` para separar columnas y guiones `-` para delimitar la fila de encabezados. La primera fila define los títulos y la segunda la alineación de cada columna mediante `:-` (izquierda), `:-:` (centro) y `-:` (derecha). Las filas siguientes contienen el cuerpo de la tabla, organizando datos de forma estructurada y legible.
 
-``` bash
+``` markdown
 | Especie        | Sitio      | Altura (m) |
 |:-------------- |:----------:| ----------:|
 | Pino           | Bosque A   |        15  |
@@ -149,7 +149,7 @@ Ejemplo de tabla con la primera columna alineada a la izquierda, la segunda cent
 
 Ene el siguiente código se genera una tabla como un objeto de tipo `data.frame` y posteriormente se genera una salida con la función `kable` del paquete `knitr`.
 
-``` bash
+``` markdown
 library(knitr)
 
 df <- data.frame(
@@ -178,7 +178,7 @@ knitr::kable(df)
 
 Para insertar imágenes en Markdown se utiliza la sintaxis:
 
-``` bash
+``` markdown
 ![Texto alternativo](ruta-imagen)
 ```
 
@@ -186,7 +186,7 @@ donde `Texto_descripcion_imagen` corresponde al caption o descripción de la ima
 
 Si este código se incluye dentro de un párrafo, la imagen aparece en línea con el texto; mientras que si se coloca en una línea separada, la imagen se muestra en un párrafo nuevo. Esta sintaxis sencilla facilita la integración visual en documentos Markdown y Quarto, con opciones para escalar y alinear imágenes con atributos adicionales si se desea.
 
-``` bash
+``` markdown
 Ejemplo de imagen en línea ![TESVB](figuras/web-TESVB.png)
 
 Ejemplo de imagen desplegada
@@ -198,7 +198,7 @@ Ejemplo de imagen desplegada
 
 ![Logotipo de Rstudio](figuras/web-TESVB.png)
 
-Agregar una imagen vinculada con una líga de un sitio web:
+Agregar una imagen vinculada con una líga de un sitio web. Noté que al colocar el cursor sobre la imagen cambia el ícono del cursor y puede presionar sobre la imagen para acceder a la liga.
 
 [![TESVB](figuras/web-TESVB.png)](https://tesvb.edomex.gob.mx/)
 
@@ -211,7 +211,7 @@ Para insertar fórmulas matemáticas en línea dentro de un párrafo, se utiliza
 ::: panel-tabset
 ### En lineal
 
-``` bash
+``` markdown
 
 La altura del árbol se estima con la fórmula $H = \alpha + \beta \cdot \ln(D)$, 
 donde $H$ es la altura, $D$ el diámetro, y $\alpha, \beta$ parámetros del modelo.
@@ -221,7 +221,7 @@ La altura del árbol se estima con la fórmula $H = \alpha + \beta \cdot \ln(D)$
 
 ### En bloque
 
-``` bash
+``` markdown
 Para una fórmula en bloque:
 
 $$
@@ -242,13 +242,12 @@ Quarto destaca porque incluye y ejecuta bloques de código de distintos lenguaje
 
 Estos bloques se ejecutan durante el renderizado para mostrar resultados actualizados en el documento final. Aunque esta función proviene de sistemas como `Jupyter` o `R Markdown`, `Quarto` mejora la experiencia al integrar múltiples lenguajes en un solo archivo, facilitando informes reproducibles y dinámicos.
 
-``` bash
+```` markdown
 ```{Lenguaje:  `Python`, `R` o `Julia`}
 Código fuente: 
 ```
 
-```         
-```
+````
 
 ## Configuración de bloques de codigo
 
@@ -268,8 +267,8 @@ A continuación se presentan distintas formas de configurar bloques de código e
 ::: panel-tabset
 ### Código 1
 
-``` bash
-```{`r`,  echo=FALSE, output=TRUE, warning=FALSE}
+```` markdown
+```{{r,  echo=FALSE, output=TRUE, warning=FALSE}}
 df <- data.frame(
   Especie = c("Pino", "Encino"),
   Sitio   = c("Bosque A", "Bosque B"),
@@ -278,8 +277,7 @@ df <- data.frame(
 knitr::kable(df)
 ```
 
-```         
-```
+````
 
 **Salida 1**
 
@@ -294,13 +292,12 @@ knitr::kable(df)
 
 ### Código 2
 
-``` bash
-```{`r`,  echo=TRUE, output=TRUE, warning=FALSE}
+```` markdown
+```{{r,  echo=TRUE, output=TRUE, warning=FALSE}}
 knitr::kable(df)
 ```
 
-```         
-```
+````
 
 **Salida 2**
 
@@ -310,14 +307,13 @@ knitr::kable(df)
 
 ### Código 3
 
-``` bash
-```{`r`,  echo=TRUE, output=TRUE, warning=FALSE}
+```` markdown
+```{{r,  echo=TRUE, output=TRUE, warning=FALSE}}
 #| tbl-cap: "Resumen"
 knitr::kable(df)
 ```
 
-```         
-```
+````
 
 **Salida 3**
 
@@ -331,15 +327,14 @@ knitr::kable(df)
 
 ### Código 4
 
-``` bash
-```{`r`,  echo=TRUE, output=TRUE, warning=FALSE}
+```` markdown
+```{{r,  echo=TRUE, output=TRUE, warning=FALSE}}
 #| label: tbl-arboles
 #| tbl-cap: "Resumen"
 knitr::kable(df)
 ```
 
-```         
-```
+````
 
 **Salida 4**
 
@@ -362,19 +357,18 @@ Las referencias cruzadas facilitan que los lectores naveguen por un documento al
 :::: panel-tabset
 ### Para figura
 
-``` bash
+```` markdown
 
 Por ejemplo, ver @fig-plot.
 
-```{`r`,  echo=FALSE, output=TRUE, warning=FALSE}
+```{{r,  echo=FALSE, output=TRUE, warning=FALSE}}
 #| label: fig‑1
 #| fig‑cap: Mi figura de ejemplo
 
 plot(cars)
 ```
 
-```         
-```
+````
 
 Por ejemplo, ver @fig-plot.
 
@@ -389,17 +383,16 @@ plot(cars)
 
 ### Para tabla
 
-``` bash
+````markdown
 Ver @tbl-arboles
 
-```{`r`,  echo=TRUE, output=TRUE, warning=FALSE}
+```{{r,  echo=TRUE, output=TRUE, warning=FALSE}}
 #| label: tbl-resumen
 #| tbl-cap: "Resumen"
 knitr::kable(df)
 ```
 
-```         
-```
+````
 
 Ver @tbl-resumen
 
@@ -411,27 +404,24 @@ knitr::kable(df)
 
 ### Para ecuación
 
-``` bash
 Para una fórmula en bloque destacada:
+
+```markdown
 
 $$
 H = \alpha + \beta \cdot \ln(D) +\epsilon
 $${#eq‑log}
+
+De modo similar, podemos reexpresar (@eq-log) de la siguiente forma…
 ```
 
 $$
 H = \alpha + \beta \cdot \ln(D) +\epsilon
 $$ {#eq-log}
 
-``` bash
-Entonces, podemos reexpresar (–@eq-log) de la siguiente manera…
-
 De modo similar, podemos reexpresar (@eq-log) de la siguiente forma…
-```
 
-Entonces, podemos reexpresar ([-@eq-log]) de la siguiente manera…
-
-De modo similar, podemos reexpresar (@eq-log) de la siguiente forma…
+::::
 
 ### Para callouts
 
@@ -448,7 +438,6 @@ Callout de tipo `tip` para hacer una recomendación
 :::
 
 Consideré la recomendación que se muestra en @tip-ejemplo
-::::
 
 ## Citación
 
@@ -460,7 +449,7 @@ Quarto usa Pandoc para generar automáticamente citas y bibliografías en difere
 
 ### Sintaxis
 
-``` bash
+``` markdown
 
 Quarto utiliza la representación estándar de marca Pandoc para citas (p. ej. [@citation]) 
 — citas van dentro de los corchetes y están separadas por punto y coma. Cada cita debe tener una clave,
@@ -482,7 +471,7 @@ Quarto utiliza Pandoc para formatear citas y bibliografías. Por defecto, usa el
 ::: panel-tabset
 ### Configuración YAML
 
-``` bash
+``` markdown
 ---
 title: "Iniciando con Quarto"
 author: "Ricardo M"
@@ -496,7 +485,7 @@ lang: es
 
 ### Almacenamiento en .bib
 
-``` bash
+``` markdown
 @book{tanner1993tools,
   title={Tools for statistical inference: },
   subtitle={Methods for the Exploration of Posterior Distributions and Likelihood Functions},
@@ -513,7 +502,7 @@ lang: es
 ::: panel-tabset
 ### Ejemplo 1
 
-``` bash
+``` markdown
 Blah Blah [see @gelfand1990illustration, pp. 33-35;
 also @tanner1993tools, chap. 1]
 ```
@@ -524,7 +513,7 @@ Blah Blah [see @gelfand1990illustration, pp. 33-35; also @tanner1993tools, chap.
 
 ### Ejemplo 2
 
-``` bash
+``` markdown
 Blah Blah [@gelfand1990illustration, pp. 33-35, 38-39 and Tanner]
 ```
 
@@ -534,7 +523,7 @@ Blah Blah [@gelfand1990illustration, pp. 33-35, 38-39 and Tanner]
 
 ### Ejemplo 3
 
-``` bash
+``` markdown
 Blah Blah [@gelfand1990illustration; @tanner1993tools].
 ```
 
@@ -544,7 +533,7 @@ Blah Blah [@gelfand1990illustration; @tanner1993tools]
 
 ### Ejemplo 4
 
-``` bash
+``` markdown
 Tanner says blah [-@tanner1993tools]
 ```
 
@@ -555,7 +544,7 @@ Tanner says blah [-@tanner1993tools]
 
 **Callout Blocks** son una excelente manera de atraer la atención adicional a ciertos conceptos, o de indicar más claramente que cierto contenido es complementario o aplicable solo a algunos escenarios.
 
-``` bash
+``` markdown
 ::: {.callout-note}
 Tenga en cuenta que hay cinco tipos de llamadas, incluyendo:
 note, tip, warning, caution, y important.
@@ -565,7 +554,7 @@ note, tip, warning, caution, y important.
 ::::::::: panel-tabset
 ### Note
 
-``` bash
+``` markdown
 ::: callout-note
 Tenga en cuenta que hay cinco tipos de llamadas, incluyendo: `note`, `warning`, `important`, `tip`, and `caution`.
 :::
@@ -577,7 +566,7 @@ Tenga en cuenta que hay cinco tipos de llamadas, incluyendo: `note`, `warning`, 
 
 ### Warning
 
-``` bash
+``` markdown
 ::: {.callout-warning}
 Las llamadas proporcionan una manera sencilla de llamar la atención, por ejemplo, a esta advertencia.
 :::
@@ -589,7 +578,7 @@ Las llamadas proporcionan una manera sencilla de llamar la atención, por ejempl
 
 ### Important
 
-``` bash
+``` markdown
 ::: {.callout-important}
 El encabezado de llamada se proporciona por el tipo de llamada, con el encabezado esperado 
 (es decir, Nota, Advertencia, Importante, Consejo o Precaución).
@@ -602,7 +591,7 @@ El encabezado de llamada se proporciona por el tipo de llamada, con el encabezad
 
 ### Tip
 
-``` bash
+``` markdown
 ::: {.callout-tip " title="Podemos cambiar el título"}
 Este es un ejemplo de una llamada con un título. Proporcionar un encabezado de llamada es opcional.
 :::
@@ -614,7 +603,7 @@ Este es un ejemplo de una llamada con un título. Proporcionar un encabezado de 
 
 ### Caution
 
-``` bash
+``` markdown
 ::: {.callout-caution}
 Evitar sobrexplotación forestal
 :::
@@ -626,7 +615,9 @@ Evitar sobrexplotación forestal
 
 ### Una más simple
 
-``` bash
+Noté que aquí no se muestra el ícono del callout `note`.
+
+``` markdown
 ::: {.callout-note icon=FALSE appearance="simple"}
 Tenga en cuenta que hay cinco tipos de llamadas, incluyendo:
 note, tip, warning, caution, y important.
